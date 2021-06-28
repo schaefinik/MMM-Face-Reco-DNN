@@ -75,9 +75,6 @@ Module.register('MMM-Face-Reco-DNN', {
 
     // there are 3 states (noface, unknown face, known face). Each of these has classes that allow them
     // this configuration defines which classes provide which states
-    this.config.classes_noface =[this.config.noFaceClass, this.config.defaultClass,                           this.config.alwaysClass];
-    this.config.classes_unknown=[this.config.unknownClass,this.config.defaultClass, this.config.everyoneClass,this.config.alwaysClass];
-    this.config.classes_known  =[this.config.knownClass,                            this.config.everyoneClass,this.config.alwaysClass];
 
   },
 
@@ -100,7 +97,7 @@ Module.register('MMM-Face-Reco-DNN', {
     };
   },
 
-----------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------
   login_user: function(name) {
     this.sendNotification("CURRENT_PROFILE", name);
 },
@@ -108,109 +105,13 @@ Module.register('MMM-Face-Reco-DNN', {
   logout_user: function(name) {
     this.sendNotification("CURRENT_PROFILE", "default");
   },
-    
-  // ----------------------------------------------------------------------------------------------------
-  get_class_set: function(userClasses) {
-    // function to take all the classes from logged in users and work out the total set (no duplicates) of the classes
-    var self = this;
 
-    // all the classes from all the logged in users are in this.userClasses like
-    // this.userClasses[user1]=array of classes
-    // this.userClasses[user2]=array of classes
-    // etc
-    
-    var classList=[];
-    var finalClasses=[];
-    
-    Object.values(userClasses).forEach(function(classes) {
-      // classes is an array of classes for a user
-      classes.forEach(val=>classList[val]=1);      
-    });
-
-    // classList should now have a unique list of the classes as properties
-    Object.keys(classList).forEach(function(val) {
-      // val is a string which is the name of a class
-      finalClasses.push(val);
-    });
-    
-    return finalClasses;
-  },
   // ----------------------------------------------------------------------------------------------------
-  show_modules: function(showClasses,exceptClasses) {
-    // show modules with "showClasses" except for those with "exceptClasses"
-    var self = this;
-    this.config.debug && Log.log('Showing all new classes:' + showClasses + ', except old classes:' + exceptClasses);
-    MM.getModules()
-      .withClass(showClasses)
-      .exceptWithClass(exceptClasses)
-      .enumerate(function(module) {
-       module.show(
-         self.config.animationSpeed,
-         function() {
-           Log.log(module.name + ' is shown.');
-         },
-         {
-           lockString: self.identifier,
-         }
-       );
-      });
-  },
+ 
   // ----------------------------------------------------------------------------------------------------
-  hide_modules: function(hideClasses,exceptClasses) {
-    // hide modules with "hideClasses" except for those with "exceptClasses"
-    var self = this;
-    // there must be a fancier javascript way to do this if with just runs that same getModules code but with different collections of selectors
-    // look to fix this later
-    if (hideClasses===0) {
-      this.config.debug && Log.log('Hiding all classes except new classes:' + exceptClasses);
-      MM.getModules()
-       .exceptWithClass(exceptClasses)
-       .enumerate(function(module) {
-         module.hide(
-           self.config.animationSpeed,
-           function() {
-             Log.log(module.name + ' is hidden.');
-           },
-           {
-             lockString: self.identifier,
-           }
-         );
-       });
-    } else if (exceptClasses===0) {
-      this.config.debug && Log.log('Hiding old classes:' + hideClasses);
-      MM.getModules()
-       .withClass(hideClasses)
-       .enumerate(function(module) {
-         module.hide(
-           self.config.animationSpeed,
-           function() {
-             Log.log(module.name + ' is hidden.');
-           },
-           {
-             lockString: self.identifier,
-           }
-         );
-       });
-    } else {
-      this.config.debug && Log.log('Hiding all old classes:' + hideClasses + ', except new classes:' + exceptClasses);
-      MM.getModules()
-       .withClass(hideClasses)
-       .exceptWithClass(exceptClasses)
-       .enumerate(function(module) {
-         module.hide(
-           self.config.animationSpeed,
-           function() {
-             Log.log(module.name + ' is hidden.');
-           },
-           {
-             lockString: self.identifier,
-           }
-         );
-       });
-    }
-    
-    
-  },
+  
+  // ----------------------------------------------------------------------------------------------------
+  
   // ----------------------------------------------------------------------------------------------------
   socketNotificationReceived: function(notification, payload) {
     var self = this;
